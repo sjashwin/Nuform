@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import contract from './contracts_abi/Auction.json';
+import contract from './contracts_abi/SimpleAuction.json';
 
 /**
  * ContractManager manages the contract.
@@ -38,17 +38,8 @@ export default class ContractManager {
      * @returns A promise that resolves to the highes bid value.
      */
     public async highestBid(): Promise<string> {
-        const highestBid: string = await this.contract.highestBid();
+        const highestBid: string = await this.contract.bid(20);
         return highestBid;
-    }
-
-    /**
-     * Retrieves the highest bidder for the product.
-     * @returns A promise that resolves the highest bidder account.
-     */
-    public async highestBidder(): Promise<string> {
-        const highestBidder: string = await this.contract.highestBidder();
-        return highestBidder;
     }
 
     public async isAlive(): Promise<Boolean> {
@@ -59,10 +50,9 @@ export default class ContractManager {
     public async bid(value: string): Promise<Boolean> {
         let flag = false;
         if (!value) return flag;
-        const ethValue: ethers.BigNumber = ethers.utils.parseEther(value);
         const gasLimit = 200000;
         try {
-            const tx = await this.contract.bid({ value: ethValue, gasLimit });
+            const tx = await this.contract.setBid("123", value, {gasLimit});
             console.log("Transaction compelete:", tx);
             flag = true;
         } catch (error) {
@@ -71,5 +61,11 @@ export default class ContractManager {
         } finally {
             return flag
         }
+    }
+
+    public async getBids() {
+        const bids = await this.contract.getBid("1234");
+        console.log(bids)
+        // console.log("Bids:", parseInt(bids[0].toString()), bids[1].toString());
     }
 }

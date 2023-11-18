@@ -6,20 +6,14 @@ async function main() {
 
     console.log(
         "Deploying contracts with the account:",
-        deployer.address
+        deployer
     );
 
     console.log("Account balance:", (await deployer.getBalance()).toString());
 
-    const Contract = await ethers.getContractFactory("Auction");
+    const Contract = await ethers.getContractFactory("SimpleAuction", deployer);
 
-    const oneHourInSeconds = 60 * 60;
-    const beneficiary = deployer.address;
-
-    const contract = await Contract.deploy(
-        oneHourInSeconds,
-        beneficiary,
-    );
+    const contract = await Contract.deploy();
 
     console.log("Contract address:", contract.address);
 }
